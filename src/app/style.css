@@ -1,0 +1,73 @@
+
+body{
+  overflow: hidden;
+}
+
+.main{
+  height: 100vh;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  background-color: rgb(16, 16, 16);
+  position: relative;
+}
+
+
+
+
+.main h1 {
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+}
+
+
+@media (max-width: 1000px) {
+  .controls{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background-color: rgb(225, 225, 225);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .controls{
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: grid;
+    grid-template: 
+        "l t r" 1fr
+        "l p r" 1fr
+        "l b r" 1fr 
+  }
+
+  .left{
+    grid-area: l;
+    margin-right: 30px;
+  }
+
+  .right{
+    grid-area: r;
+    transform: rotate(180deg);
+    margin-left: 30px;
+  }
+
+  .up{
+    grid-area: t;
+    transform: rotate(90deg);
+  }
+  
+  .down{
+    grid-area: b;
+    transform: rotate(270deg);
+  }
+
+  .play, .pause{
+    grid-area: p;
+  }
+
+}
