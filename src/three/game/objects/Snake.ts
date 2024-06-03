@@ -6,20 +6,33 @@ import { Food } from './Food';
 import { GameState } from "../helpers/GameState";
 
 
-
+// Định nghĩa class Snake 
 export class Snake implements LifeCycle {
 
-
+  // Danh sách các phần cơ thể của rắn 
   public body: Mesh[] = []
+  // Hình học và vật liệu cho các phần cơ thể
   private geometry : RoundedBoxGeometry = new RoundedBoxGeometry(1, 1, 1);
   private material : MeshBasicMaterial = new MeshBasicMaterial({ color: 'blue'});
+
+  // Đầu và đuôi của con rắn
   public head: Mesh = new Mesh(this.geometry, new MeshBasicMaterial({ color: 'red'})); 
   public tail : Mesh = new Mesh(this.geometry, this.material);
+
+  // Hướng di chuyển cuối cùng của con rắn
   public lastMove : string = 'ArrowUp';
+
+  // Biến kiểm tra xem con rắn có thể ăn thức ăn không
   private iCanEat : boolean = false;
+
+  // Vị trí cuối cùng của đuôi
   private lastTailPosition = this.tail.position
+
+  // Kích thước của mỗi ô và giới hạn của lưới trò chơi
   private cubeSize = 1;
   private gridLimit = 0
+
+  // Ánh xạ các hướng di chuyển ngược lại nhau
   private oppositeDirection = new Map<string, string[]>(
     [
       ['ArrowUp', ['ArrowDown', 's']],
@@ -33,7 +46,7 @@ export class Snake implements LifeCycle {
     ]
   )
 
-
+  // Định nghĩa phương thức getInstance() để tạo ra một instance của class Snake
   public static instance: Snake;
 
   public static getInstance(limit: number) {
@@ -44,11 +57,13 @@ export class Snake implements LifeCycle {
     return Snake.instance;
   }
 
+  // Constructor của class Snake
   private constructor(limit: number) {
     this.gridLimit = Math.floor(limit / 2);
     this.init();
   }
 
+  // Phương thức khởi tạo con rắn
   public init() {
 
     this.body = [];
@@ -71,20 +86,22 @@ export class Snake implements LifeCycle {
     this.body.push(item1, this.tail);
     
   }
-
+  // phương thức cập nhật trạng thái con rắn
   public update() {
     
   }
 
+  // Phương thức loại bỏ các phần cơ thể của con rắn khỏi scene
   public removeBody() {
     this.body.forEach((m: Mesh) => SceneManager.mainGroup.remove(m));
   }
 
+  // Phương thức thêm các phần cơ thể của con rắn vào scene
   public addBody() {
     this.body.forEach((m: Mesh) => SceneManager.mainGroup.add(m));
   }
   
-
+  // Phương thức xử lý hành động khi con rắn ăn thức ăn
   private eat(food: Food) {
     this.iCanEat = false;
     SceneManager.mainGroup.remove(food.food);
@@ -119,6 +136,7 @@ export class Snake implements LifeCycle {
     SceneManager.mainGroup.add(food.food);
   }
 
+  // Phương thức thêm phần đuôi mới vào con rắn
   private addTail() {
     const tailPosition = this.lastTailPosition
     const newTail = this.tail.clone();
@@ -128,10 +146,12 @@ export class Snake implements LifeCycle {
     this.tail = newTail;
   }
 
+  // Phương thức kiểm tra xem con rắn có thể ăn thức ăn không
   private canIEat(foodPosition: Vector3) {
     return this.head.position.x === foodPosition.x && this.head.position.z === foodPosition.z;
   }
 
+  // Phương thức xử lý hành động di chuyển của con rắn
   public move(direction : string, food: Food) {
     const currentPosition = new Vector3(this.head.position.x, this.head.position.y, this.head.position.z);
     const newPosition = new Vector3(this.head.position.x, this.head.position.y, this.head.position.z)
@@ -161,6 +181,7 @@ export class Snake implements LifeCycle {
     if (this.iCanEat) this.eat(food);
   }
 
+  // Phương thức kiểm tra xem con rắn va chạm với bức tường hoặc thân rắn của mình không
   private ICrash(x: number, z: number) {
     if (x > this.gridLimit || x < -(this.gridLimit)) return true
     if (z > this.gridLimit || z < -(this.gridLimit)) return true;
@@ -168,6 +189,7 @@ export class Snake implements LifeCycle {
     return this.body.some((m: Mesh) => m.position.x === h.x && m.position.z === h.z)
   }
 
+  // Phương thức cập nhật vị trí của các phần cơ thể của con rắn
   private followHead(headPosition: Vector3) {
     for(let i = 0; i < this.body.length; i++) {
       const currentPosition = new Vector3(this.body[i].position.x, this.body[i].position.y, this.body[i].position.z);
@@ -176,6 +198,7 @@ export class Snake implements LifeCycle {
     }
   }
 
+  
   destroy(): void {
     throw new Error("Method not implemented.");
   }

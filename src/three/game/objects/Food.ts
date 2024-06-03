@@ -1,29 +1,39 @@
-import { Mesh, Object3D, Object3DEventMap, PointLight, Vector3 } from "three";
+import { Mesh, Object3D, Vector3 } from "three";
 import { LifeCycle } from "../helpers/LifeCycle";
 import { Loader } from "@/three/setup/Loader";
 import { SceneManager } from "@/three/setup/SceneManager";
-import { Render } from "@/three/setup/Render";
 
-
+// Lớp Food đại diện cho thức ăn trong trò chơi
 export class Food implements LifeCycle {
 
-  
-  private BaseFood : Object3D | null
-  public food : any
-  public path: string
+  // Đối tượng cơ bản của thức ăn
+  private BaseFood : Object3D | null;
+
+  // Đối tượng thức ăn trong trò chơi
+  public food : any;
+
+  // Đường dẫn đến model của thức ăn
+  public path: string;
+
+  // Kích thước của thức ăn
   public sizeFood: number = 1/21;
+
+  // Bước di chuyển của thức ăn
   public stepMove: number = 1/7;
 
+  // Constructor của lớp Food
   constructor(path: string ) {
     this.path = path;
     this.BaseFood = null;
     this.food = null;
   }
 
+  // Phương thức để lấy một số nguyên ngẫu nhiên
   getRandomInt() {
     return Math.floor(Math.random() * SceneManager.diodrama.sizeGrid) - Math.floor(SceneManager.diodrama.sizeGrid / 2);
   }
 
+  // Phương thức để thiết lập các thuộc tính mặc định cho thức ăn
   private setDefaultProperties() {
     this.food = this.BaseFood?.clone();
     this.newPosition();
@@ -31,14 +41,17 @@ export class Food implements LifeCycle {
     this.food.rotation.x = Math.PI / 180 * 0;
   }
 
+  // Phương thức để thiết lập vị trí mới cho thức ăn
   public newPosition() {
     this.food.position.set(this.getRandomInt(), 0, this.getRandomInt());
   }
 
+  // Phương thức để kiểm tra vị trí mới của thức ăn có hợp lệ hay không
   public isAvailablePosition(snakePosition: Mesh[], food: Vector3) {
     return !snakePosition.some(({position}) => position.x === food.x && position.z === food.z)
   }
 
+  // Phương thức để tải mô hình của thức ăn
   async getModelFood() {
 
     if(this.BaseFood){
@@ -58,17 +71,15 @@ export class Food implements LifeCycle {
     this.setDefaultProperties();
   }
 
+  // Phương thức khởi tạo
+  init() {}
 
-
-
-  init() {
-    
-
-
-  }
+  // Phương thức cập nhật
   update(): void {
     throw new Error("Method not implemented.");
   }
+
+  // Phương thức hủy
   destroy(): void {
     throw new Error("Method not implemented.");
   }
